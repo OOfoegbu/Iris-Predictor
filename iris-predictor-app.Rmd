@@ -1,0 +1,41 @@
+---
+title: "Iris Species Predictor App"
+author: "Omo Ofoegbu"
+date: "4/14/2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## The Iris Species Predictor App
+
+This app is useful for predicting the specie of iris flower by providing the Sepal and Petal length and width. 
+
+The app uses a random forest algorithm, trained using the iris dataset available in base r package.
+
+The estimated prediction accuracy is ~0.97. 
+
+## Summary of Iris Dataset
+
+This is the training dataset from r, used to build the prediction model
+
+```{r}
+summary(iris)
+```
+
+## Plot of the Iris Dataset
+
+```{r}
+plot(iris$Sepal.Length, iris$Petal.Length, col = factor(iris$Species),
+     xlab = "Sepal Length", ylab = "Petal Length", main = "Iris")
+legend("bottomright", c("setosa", "versicolor", "virginica"), pch = "o", col = c("black", "red", "green"))
+```
+
+
+## Required User Input 
+- Sepal Length
+- Sepal Width
+- Petal Length
+- Petal Width

@@ -1,0 +1,76 @@
+---
+title: "Iris Predictor"
+author: "Omo Ofoegbu"
+date: "4/14/2017"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is the supporting document for the Iris Species Predictor App. 
+
+This application predicts the species of iris flower. The user supplier the length and width of the sepal and petal of an unknown iris flower 
+
+
+## INPUT  
+
+```{r eruptions, echo=FALSE}
+inputPanel(
+  sliderInput("sliderSepal.Length", "What is the length of the Sepal", 4.0, 8.0, value = 5.0),
+       sliderInput("sliderSepal.Width", "What is the width of the Sepal", 2.0, 4.5, value = 3.0),
+       sliderInput("sliderPetal.Length", "What is the length of the Petal", 1.0, 7.0, value = 4.0),
+       sliderInput("sliderPetal.Width", "What is the width of the Petal", 0.1, 2.5, value = 1.1)
+)
+```
+
+## Run algorithm to develop prediction model
+
+```{r}
+library(caret)
+    library(randomForest)
+    modFit <- randomForest(Species~., data=iris)
+    
+    modelpred <- reactive({
+        Sepal.Length <- input$sliderSepal.Length
+        Sepal.Width <- input$sliderSepal.Width
+        Petal.Length <- input$sliderPetal.Length
+        Petal.Width <- input$sliderPetal.Width
+        predict(modFit, newdata = data.frame(Sepal.Length = Sepal.Length, Sepal.Width = Sepal.Width,
+                                             Petal.Length = Petal.Length, Petal.Width = Petal.Width))
+        
+    })
+```
+
+
+## Plot Iris Dataset, with user input sample
+
+```{r}
+renderPlot({
+  Sepal.Length <- input$sliderSepal.Length
+        Sepal.Width <- input$sliderSepal.Width
+        Petal.Length <- input$sliderPetal.Length
+        Petal.Width <- input$sliderPetal.Width
+        
+        plot(iris$Sepal.Length, iris$Petal.Length, col = factor(iris$Species),
+         xlab = "Sepal Length", ylab = "Petal Length", main = "Iris Species")
+        legend(7.5,3, c("setosa", "versicolor", "virginica", "user input"),pch = c("o","o","o","+"), col = c("black", "red", "green", "black"), bty = "n")
+        points(Sepal.Length, Petal.Length, pch = "+", cex = 2)
+})
+```
+
+## Predicted Iris Specie from User Input
+```{r}
+renderText({
+        modelpred()
+    })
+    
+renderTable({
+        data.frame(Specie = c("1. - setosa", "2. - versicolor", "3. - virginica"))
+    })
+```
+    
+
+        
